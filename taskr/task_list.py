@@ -13,20 +13,12 @@ bp = Blueprint('task_list', __name__)
 
 @bp.route('/')
 def index():
-    logging.info("Fetching task list")
     db = get_db()
     tasks = db.execute(
         'SELECT t.id, author_id, task_name, create_time, delete_time, u.username'
         ' FROM task t JOIN user u ON t.author_id = u.id'
         ' ORDER BY delete_time DESC NULLS FIRST, create_time DESC'
     ).fetchall()
-    logging.info('about to flash task count')
-    flash(len(tasks))
-    i = []
-    for task in tasks:
-        logging.info(f"Task retrieved: {task['task_name']} by {task['username']}")
-        i.append(task)
-    logging.info(f"Retrieved {len(i)} tasks")
     return render_template('task_list/index.html', tasks=tasks)
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -101,8 +93,6 @@ def update(id):
     return render_template('task_list/update.html', task=task)
 
 @bp.route('/<int:id>/delete', methods=['POST'])
-
-
 @login_required
 def delete(id):
     logging.info(f"Deleting a task")

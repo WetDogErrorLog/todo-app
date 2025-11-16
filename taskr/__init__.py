@@ -38,6 +38,10 @@ def create_app(test_config=None):
     app.register_blueprint(task_list.bp)
     app.add_url_rule('/', endpoint='index')
 
+    from . import tag
+    app.register_blueprint(tag.bp)
+    app.add_url_rule('/tag/', endpoint='tag.index')
+
     # Add a db shell
     # Run with: flask db-shell
     # bd_conn.execute("<SQL STATEMENT>")

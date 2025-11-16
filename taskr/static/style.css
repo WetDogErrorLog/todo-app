@@ -27,6 +27,10 @@ input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
 
 
+.tag { display: inline-block; background: #377ba8; color: white; padding: 0.2em 0.5em; border-radius: 4px; margin: 0.2em; font-size: 0.9em; }
+.tag .title { font-weight: bold; color:#4aae26; }
+.tag .delete_button { margin-left: 0.5em; color: #190d0d; font-weight: bold; cursor: pointer; background:rgba(245, 29, 29); border: none; font-size: 1em; }
+
 /* --- CUSTOMIZATION FOR THE 'DONE' BUTTON --- */
 
 input.task_complete {

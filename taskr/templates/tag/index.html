@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Tags{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('tag.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="create_form">
+    <h2>Add New Tag</h2>
+    <form method="POST" action="{{ url_for('tag.create') }}">
+        <label for="tag_name">Tag Name</label>
+        <input name="tag_name" id="tag_name" value="{{ request.form['tag_name'] }}" required>
+        <input type="submit" value="Add Tag">
+    </form>
+  </div>
+
+  {%  if tags %}
+    {% for tag in tags %}
+        <article class="tag">
+            <header>
+                <div>
+                <h1 class="title">{{ tag['tag_name'] }}</h1>
+                </div>
+                <form action="{{ url_for('tag.delete', id=tag['id']) }}" method="post">
+                    <input class="delete_button" type="submit" value="Delete Tag">
+                </form>
+            </header>
+        </article>
+        {% if not loop.last %}
+        <hr>
+        {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endblock %}

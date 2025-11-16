@@ -1,5 +1,7 @@
 DROP TABLe IF EXISTS user;
 DROP TABLE IF EXISTS task;
+DROP TABLE IF EXISTS task_tag;
+DROP TABLE IF EXISTS task_tag_link;
 
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,4 +16,17 @@ CREATE TABLE task (
     create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     delete_time TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (author_id) REFERENCES user (id)
+);
+
+CREATE TABLE task_tag (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tag_name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE task_tag_link (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    FOREIGN KEY (task_id) REFERENCES task (id),
+    FOREIGN KEY (tag_id) REFERENCES task_tag (id)
 );

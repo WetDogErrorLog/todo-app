@@ -18,27 +18,27 @@
     </form>
   </div>
 
-  {%  if tasks %}I have an sql query where I want to order to create_time, but also have all entries where delete_time is
-  {% for task in tasks %}
-    <article class="task">
-      <header>
-        <div>
-          <h1>{{ task['task_name'] }}</h1>
-          <div class="about">by {{ task['username'] }} on {{ task['create_time'].strftime('%Y-%m-%d') }}</div>
-        </div>
-        {% if g.user['id'] == task['author_id'] and task['delete_time'] == None %}
-           <form action="{{ url_for('task_list.delete', id=task['id']) }}" method="post">
-            <input class="task_complete" type="submit" value="Done">
-           </form>
+  {%  if tasks %}
+    {% for task in tasks %}
+      <article class="task">
+        <header>
+          <div>
+            <h1>{{ task['task_name'] }}</h1>
+            <div class="about">by {{ task['username'] }} on {{ task['create_time'].strftime('%Y-%m-%d') }}</div>
+          </div>
+          {% if g.user['id'] == task['author_id'] and task['delete_time'] == None %}
+            <form action="{{ url_for('task_list.delete', id=task['id']) }}" method="post">
+              <input class="task_complete" type="submit" value="Done">
+            </form>
+          {% endif %}
+        </header>
+        {% if task['delete_time'] %}
+          <p class="delete_time">{{ task['delete_time'] }}</p>
         {% endif %}
-      </header>
-      {% if task['delete_time'] %}
-        <p class="delete_time">{{ task['delete_time'] }}</p>
+      </article>
+      {% if not loop.last %}
+        <hr>
       {% endif %}
-    </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
-  {% endfor %}
+    {% endfor %}
   {% endif %}
 {% endblock %}
