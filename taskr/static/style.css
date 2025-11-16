@@ -31,6 +31,8 @@ input[type=submit] { align-self: start; min-width: 10em; }
 .tag .title { font-weight: bold; color:#4aae26; }
 .tag .delete_button { margin-left: 0.5em; color: #190d0d; font-weight: bold; cursor: pointer; background:rgba(245, 29, 29); border: none; font-size: 1em; }
 
+.create_form { border: 1px solid lightgray; padding: 1rem; margin-bottom: 2rem; background: #f9f9f9; }
+
 /* --- CUSTOMIZATION FOR THE 'DONE' BUTTON --- */
 
 input.task_complete {

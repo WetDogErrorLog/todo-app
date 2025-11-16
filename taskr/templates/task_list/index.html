@@ -8,15 +8,19 @@
 {% endblock %}
 
 {% block content %}
-
-  <div class="create_form">
-    <h2>Add New Task</h2>
-    <form method="POST" action="{{ url_for('task_list.create') }}">
-        <label for="task_name">Task Name</label>
-        <input name="task_name" id="task_name" value="{{ request.form['task_name'] }}" required>
-        <input type="submit" value="Add Task">
-    </form>
-  </div>
+  {% if g.user %}
+    <div class="create_form">
+      <h2>Add New Task</h2>
+      <form method="POST" action="{{ url_for('task_list.create') }}">
+          <label for="task_name">Task Name</label>
+          <input name="task_name" id="task_name" value="{{ request.form['task_name'] }}" required>
+          <input type="submit" value="Add Task">
+      </form>
+    </div>
+  {% else %}
+    <p><a href="{{ url_for('auth.login') }}">Log in</a> to manage your tasks.</p>
+    <p><a href="{{ url_for('auth.register') }}">Register</a> if you don't have an account yet.</p>
+  {% endif %}
 
   {%  if tasks %}
     {% for task in tasks %}
