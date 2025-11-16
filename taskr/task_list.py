@@ -18,7 +18,7 @@ def index():
     tasks = db.execute(
         'SELECT t.id, author_id, task_name, create_time, delete_time, u.username'
         ' FROM task t JOIN user u ON t.author_id = u.id'
-        ' ORDER BY create_time DESC'
+        ' ORDER BY delete_time DESC NULLS FIRST, create_time DESC'
     ).fetchall()
     logging.info('about to flash task count')
     flash(len(tasks))

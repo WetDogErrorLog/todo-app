@@ -12,16 +12,48 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .content > header { border-bottom: 1px solid lightgray; display: flex; align-items: flex-end; }
 .content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
 .flash { margin: 1em 0; padding: 1em; background: #cae6f6; border: 1px solid #377ba8; }
-.post > header { display: flex; align-items: flex-end; font-size: 0.85em; }
-.post > header > div:first-of-type { flex: auto; }
-.post > header h1 { font-size: 1.5em; margin-bottom: 0; }
-.post .about { color: slategray; font-style: italic; }
-.post .body { white-space: pre-line; }
+.task > header { display: flex; align-items: flex-end; font-size: 0.85em; }
+.task > header > div:first-of-type { flex: auto; }
+.task > header h1 { font-size: 1.5em; margin-bottom: 0; }
+.task .about { color: slategray; font-style: italic; }
+.task .body { white-space: pre-line; }
+.task .delete_time { color: darkred; font-weight: bold; }
 .content:last-child { margin-bottom: 0; }
 .content form { margin: 1em 0; display: flex; flex-direction: column; }
 .content label { font-weight: bold; margin-bottom: 0.5em; }
 .content input, .content textarea { margin-bottom: 1em; }
 .content textarea { min-height: 12em; resize: vertical; }
-input.task_complete { color: #2e97cc; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
+
+
+/* --- CUSTOMIZATION FOR THE 'DONE' BUTTON --- */
+
+input.task_complete {
+    /* 1. TEXT COLOR (Already set) */
+    color: white; /* Change text color to white for better contrast */
+    
+    /* 2. BACKGROUND */
+    background-color: #58cc2e; /* Use the greenish color for the background */
+    
+    /* 3. BORDER */
+    border: 2px solid #4aae26; /* Add a solid border for definition */
+    border-radius: 4px; /* Give it slightly rounded corners */
+    
+    /* 4. PADDING */
+    padding: 0.5rem 1rem; /* Increase padding for a larger button area */
+    
+    /* 5. FONT */
+    font-weight: bold; /* Make the text stand out */
+    cursor: pointer; /* Ensure the cursor changes on hover */
+    
+    /* 6. SHADOW (Optional for a "lifted" look) */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+/* --- INTERACTIVE STATE (Hover) --- */
+/* Optional: Make it change appearance when the mouse hovers over it */
+input.task_complete:hover {
+    background-color: #4aae26; /* Slightly darker green on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+}
