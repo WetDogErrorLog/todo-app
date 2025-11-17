@@ -3,19 +3,45 @@
 {% block header %}
   <h1>{% block title %}Tasks{% endblock %}</h1>
   {% if g.user %}
-    <a class="action" href="{{ url_for('task_list.create') }}">New</a>
+    <a class="action" href="{{ url_for('task_list.create_task_with_tags') }}">New</a>
   {% endif %}
 {% endblock %}
 
 {% block content %}
   {% if g.user %}
-    <div class="create_form">
-      <h2>Add New Task</h2>
-      <form method="POST" action="{{ url_for('task_list.create') }}">
-          <label for="task_name">Task Name</label>
-          <input name="task_name" id="task_name" value="{{ request.form['task_name'] }}" required>
-          <input type="submit" value="Add Task">
-      </form>
+    {% if not tags %}
+      <div>
+        <a href="{{ url_for('tag.index') }}">No tags: Go make some here</a>
+      </div>
+    {% else %}
+      <div class="create_form">
+        <h2>Add New Task</h2>
+        <form method="POST" action="{{ url_for('task_list.create_task_with_tags') }}" id="taskForm">
+
+          <div class="form-group">
+              <label for="taskName">Task Name</label>
+              <input type="text" id="taskName" name="task_name" required>
+          </div>
+
+          <div class="form-group tag-toggles">
+              <label>Select Tags</label>
+                {% for tag in tags %}
+                <div class="tag-item">
+                    <input type="checkbox" 
+                          id="tag-{{ loop.index }}" 
+                          name="selected_tags" 
+                          value="{{ tag.tag_id }}">
+                    <label for="tag-{{ loop.index }}" class="toggle-button">
+                        {{ tag.tag_name }}
+                    </label>
+                </div>
+                {% endfor %}
+          </div>
+
+          <button type="submit">Create Task</button>
+        </form>
+      
+      {% endif %}
     </div>
   {% else %}
     <p><a href="{{ url_for('auth.login') }}">Log in</a> to manage your tasks.</p>
@@ -31,7 +57,7 @@
             <div class="about">by {{ task['username'] }} on {{ task['create_time'].strftime('%Y-%m-%d') }}</div>
           </div>
           {% if g.user['id'] == task['author_id'] and task['delete_time'] == None %}
-            <form action="{{ url_for('task_list.delete', id=task['id']) }}" method="post">
+            <form action="{{ url_for('task.delete', id=task['id']) }}" method="post">
               <input class="task_complete" type="submit" value="Done">
             </form>
           {% endif %}

@@ -1,103 +1,33 @@
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
-)
-from werkzeug.exceptions import abort
-import datetime
+from flask import Blueprint, render_template, request, redirect, url_for
 from taskr.auth import login_required
 from taskr.db import get_db
+import taskr.tag as Tag
+import taskr.relationship as Relationship
+import taskr.task as Task
+
 
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
-bp = Blueprint('task_list', __name__)
+bp = Blueprint("task_list", __name__)
 
-@bp.route('/')
+
+@bp.route("/")
 def index():
     db = get_db()
-    tasks = db.execute(
-        'SELECT t.id, author_id, task_name, create_time, delete_time, u.username'
-        ' FROM task t JOIN user u ON t.author_id = u.id'
-        ' ORDER BY delete_time DESC NULLS FIRST, create_time DESC'
-    ).fetchall()
-    return render_template('task_list/index.html', tasks=tasks)
+    tasks = Task.list_tasks(db)
+    tags = Tag.list_tags(db)
+    return render_template("task_list/index.html", tasks=tasks, tags=tags)
 
-@bp.route('/create', methods=('GET', 'POST'))
+
+@bp.route("/create_task_with_tags", methods=['POST'])
 @login_required
-def create():
-    logging.info(f"Creating a new task: {request.method}")
-    if request.method == 'POST':
-        task_name = request.form['task_name']
-        error = None
-
-        if not task_name:
-            error = 'Task name is required'
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO task (task_name, author_id)'
-                ' VALUES (?, ?)',
-                (task_name, g.user['id'])
-            )
-            db.commit()
-            flash("success")
-            return redirect(url_for('task_list.index'))
-
-    return render_template('task_list/create.html')
-
-def get_task(id, check_author=True):
-    task = get_db().execute(
-        'SELECT t.id, task_name, create_time, delete_time, author_id, username'
-        ' FROM task t JOIN user u ON t.author_id = u.id'
-        ' WHERE t.id = ?',
-        (id,)
-    ).fetchone()
-
-    if task is None:
-        abort(404, f'Post id {id} does not exist')
-    if check_author and task['author_id'] != g.user['id']:
-        abort(403)
-    
-    return task
-
-@bp.route('/<int:id>/update', methods=['GET', 'POST'])
-@login_required
-def update(id):
-    logging.info(f"Updating a task: {request.method}")
-    task = get_task(id)
-
-    if request.method == 'POST':    
-        task_name = request.form['task_name']
-        set_delete = request.form['delete_task']
-        error = None
-        delete_time = None
-        if set_delete:
-            delete_time = datetime.datetime.now()
-
-        if not task_name:
-            error = 'Task name is required'
-        
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'UPDATE task SET task_name = ?, delete_time = ?'
-                ' WHERE id = ?',
-                (task_name, delete_time, id)
-            )
-            db.commit()
-            return redirect(url_for('task_list.index'))
-        
-    return render_template('task_list/update.html', task=task)
-
-@bp.route('/<int:id>/delete', methods=['POST'])
-@login_required
-def delete(id):
-    logging.info(f"Deleting a task")
-    get_task(id)
+def create_task_with_tags():
     db = get_db()
-    db.execute("UPDATE task SET delete_time = DATETIME('now') WHERE id = ?", (id,))
+    task_name = request.form["task_name"]
+    target_tag_ids = request.form.getlist("selected_tags")
+    task_id = Task.create(db=db, task_name=task_name)
+    Relationship.create_task_to_tags(db, task_id, target_tag_ids)
     db.commit()
-    return redirect(url_for('task_list.index'))
+    return redirect(url_for("task_list.index"))
